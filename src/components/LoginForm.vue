@@ -8,13 +8,16 @@
       <label for="password">pw: </label>
       <input id="password" type="text" v-model="password" />
     </div>
-    <button>login</button>
+    <button v-bind:disabled="!isUserNameValid || !password" type="submit">
+      login
+    </button>
     <p>{{ logMessage }}</p>
   </form>
 </template>
 
 <script>
-import { loginUser } from "@/api/index.js";
+import { loginUser } from "@/api/index";
+import { validateEmail } from "@/utils/validation";
 export default {
   data() {
     return {
@@ -22,6 +25,11 @@ export default {
       password: "",
       logMessage: ""
     };
+  },
+  computed: {
+    isUserNameValid() {
+      return validateEmail(this.username);
+    }
   },
   methods: {
     async submitForm() {
