@@ -1,19 +1,73 @@
 <template>
-  <form>
-    <div>
-      <label for="id">id: </label>
-      <input id="id" type="text" />
+  <div class="contents">
+    <div class="form-wrapper form-wrapper-sm">
+      <form @submit.prevent="submitForm" class="form">
+        <div>
+          <label for="username">id:</label>
+          <input id="username" type="text" v-model="username" />
+          <p class="validation-text">
+            <span class="warning" v-if="!isUsernameValid && username">
+              Please enter an email address
+            </span>
+          </p>
+        </div>
+        <div>
+          <label for="password">pw:</label>
+          <input id="password" type="text" v-model="password" />
+        </div>
+        <button
+          :disabled="!isUsernameValid || !password"
+          type="submit"
+          class="btn"
+        >
+          로그인
+        </button>
+      </form>
+      <p class="log">{{ logMessage }}</p>
     </div>
-    <div>
-      <label for="pw">pw: </label>
-      <input id="pw" type="text" />
-    </div>
-    <button>login</button>
-  </form>
+  </div>
 </template>
 
 <script>
-export default {};
+import { loginUser } from "@/api/index";
+import { validateEmail } from "@/utils/validation";
+export default {
+  data() {
+    return {
+      username: "",
+      password: "",
+      logMessage: ""
+    };
+  },
+  computed: {
+    isUsernameValid() {
+      return validateEmail(this.username);
+    }
+  },
+  methods: {
+    async submitForm() {
+      try {
+        const loginData = {
+          username: this.username,
+          password: this.password
+        };
+        const { data } = await loginUser(loginData);
+        this.logMessage = `${data.user.username} 님 환영합니다`;
+        this.initForm();
+      } catch (error) {
+        this.logMessage = error.response.data;
+      }
+    },
+    initForm() {
+      this.username = "";
+      this.password = "";
+    }
+  }
+};
 </script>
 
-<style></style>
+<style>
+.btn {
+  color: white;
+}
+</style>
