@@ -2,16 +2,38 @@
   <header id="nav">
     <div>
       <router-link to="/" class="logo">TIL</router-link>
+      <span v-if="isLogin"> by {{ username }}</span>
     </div>
     <div class="navigations">
-      <router-link to="/login">로그인</router-link> |
-      <router-link to="/signup">회원가입</router-link>
+      <template v-if="isLogin">
+        <a href="javascript:;" @click="logoutUser" class="logoutBtn"
+          >Sign out</a
+        >
+      </template>
+      <template v-else>
+        <router-link to="/login">Sign in</router-link> |
+        <router-link to="/signup">Sign up</router-link>
+      </template>
     </div>
   </header>
 </template>
 
 <script>
-export default {};
+import { mapState, mapGetters, mapMutations } from "vuex";
+export default {
+  computed: {
+    ...mapGetters(["isLogin"]),
+    ...mapState(["username"])
+  },
+  methods: {
+    ...mapMutations({
+      CLEAR_USERNAME: "CLEAR_USERNAME"
+    }),
+    logoutUser() {
+      this.CLEAR_USERNAME();
+    }
+  }
+};
 </script>
 
 <style scoped>
@@ -44,6 +66,9 @@ a.logo {
   position: fixed;
   top: 0;
   width: 100%;
+}
+.logoutBtn {
+  font-size: 14px;
 }
 a.router-link-exact-active {
   color: white;

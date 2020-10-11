@@ -31,6 +31,7 @@
 <script>
 import { loginUser } from "@/api/index";
 import { validateEmail } from "@/utils/validation";
+import { mapMutations } from "vuex";
 export default {
   data() {
     return {
@@ -52,8 +53,11 @@ export default {
           password: this.password
         };
         const { data } = await loginUser(loginData);
-        this.logMessage = `${data.user.username} 님 환영합니다`;
-        this.initForm();
+        console.log(data.token);
+        this.SET_USERNAME(data.user.username);
+        this.$router.push("/main");
+        // this.logMessage = `${data.user.username} 님 환영합니다`;
+        // this.initForm();
       } catch (error) {
         this.logMessage = error.response.data;
       }
@@ -61,7 +65,10 @@ export default {
     initForm() {
       this.username = "";
       this.password = "";
-    }
+    },
+    ...mapMutations({
+      SET_USERNAME: "SET_USERNAME"
+    })
   }
 };
 </script>
