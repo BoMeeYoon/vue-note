@@ -4,8 +4,26 @@ import Vuex from "vuex";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: {},
-  mutations: {},
-  actions: {},
+  state: {
+    username: ""
+  },
+  getters: {
+    isLogin(state) {
+      return state.username !== "";
+    }
+  },
+  mutations: {
+    SET_USERNAME(state, username) {
+      state.username = username;
+    },
+    CLEAR_USERNAME(state) {
+      state.username = "";
+    }
+  },
+  actions: {
+    fetchUsername({ commit }, username) {
+      commit("SET_USERNAME", username);
+    }
+  },
   modules: {}
 });
